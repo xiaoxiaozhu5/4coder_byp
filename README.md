@@ -8,6 +8,15 @@ My personal 4coder custom layer
 `git submodule update`\
 `build release`
 
+build on MacOS M1 
+`cd \path\to\4ed`\
+`git clone https://github.com/B-Y-P/4coder_byp.git`\
+`cd 4coder_byp`\
+`git submodule init`\
+`git submodule update`\
+`arch -x86_64 zsh\
+`./build.sh release`
+
 </br>
 
 ### Common issue for Windows:
