@@ -16,7 +16,8 @@ build on MacOS M1
 `git submodule init`\
 `git submodule update`\
 `arch -x86_64 zsh`\
-`./build.sh release`
+`./build.sh release`\
+`../test_build/4ed`
 
 </br>
 
