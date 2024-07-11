@@ -9,6 +9,6 @@ if [ ! -d "../test_build" ]; then
 fi
 
 pushd ../test_build
-../custom/bin/buildsuper_x64-mac.sh ../4coder_byp/4coder_byp.cpp "$1"
+../custom/bin/buildsuper_x64-mac.sh ../4coder_byp/4coder_byp.cpp $@
 ../4coder_byp/apply.sh
 popd
