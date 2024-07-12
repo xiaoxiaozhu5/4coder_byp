@@ -41,7 +41,7 @@ byp_vim_bindings(Application_Links *app){
 	VimBind(N|MAP, vim_line_start,                        (Sft|KeyCode_0));
 	VimBind(N|MAP, byp_space,                                  KeyCode_Space);
 	VimBind(N|MAP, move_line_up,                          (Alt|KeyCode_K));
-	VimBind(N|MAP, move_line_down,                        (Alt|KeyCode_J));
+	//VimBind(N|MAP, move_line_down,                        (Alt|KeyCode_J));
 	VimBind(N|MAP, change_active_panel_backwards,         (Ctl|KeyCode_H));
 	VimBind(N|MAP, change_active_panel,                   (Ctl|KeyCode_L));
 	VimBind(N|MAP, goto_next_jump,                        (Alt|KeyCode_N));
@@ -87,7 +87,7 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 
 	Bind(project_go_to_root_directory,  KeyCode_H, KeyCode_Control);
 	Bind(save_all_dirty_buffers,        KeyCode_S, KeyCode_Control, KeyCode_Shift);
-	Bind(byp_build_project,             KeyCode_M, KeyCode_Alt);
+	Bind(byp_build_project,             KeyCode_B, KeyCode_Control, KeyCode_Shift);
 	Bind(execute_any_cli,               KeyCode_Z, KeyCode_Alt);
 	Bind(execute_previous_cli,          KeyCode_Z, KeyCode_Alt, KeyCode_Shift);
 	Bind(quick_swap_buffer,             KeyCode_BackwardSlash, KeyCode_Alt);
@@ -170,4 +170,7 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 	Bind(word_complete,                                 KeyCode_Tab);
 	Bind(if0_off,                                       KeyCode_I, KeyCode_Alt);
 	Bind(open_matching_file_cpp,                        KeyCode_2, KeyCode_Alt);
+	Bind(vim_goto_definition,                           KeyCode_J, KeyCode_Alt);
+	Bind(vim_list_all_functions_current_buffer_lister,  KeyCode_M, KeyCode_Alt);
+	Bind(list_all_functions_all_buffers_lister,         KeyCode_S, KeyCode_Alt, KeyCode_Shift);
 }
