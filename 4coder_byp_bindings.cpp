@@ -46,7 +46,7 @@ byp_vim_bindings(Application_Links *app){
 	VimBind(N|MAP, change_active_panel,                   (Ctl|KeyCode_L));
 	VimBind(N|MAP, goto_next_jump,                        (Alt|KeyCode_N));
 	VimBind(N|MAP, goto_prev_jump,                    (Alt|Sft|KeyCode_N));
-	VimBind(N|MAP, vim_switch_lister,                 (Ctl|Sft|KeyCode_I));
+	VimBind(N|MAP, vim_switch_lister,                     (Ctl|Sft|KeyCode_I));
 
 	VimBind(N|V|MAP, vim_bounce,                          (Ctl|KeyCode_5));
 	VimBind(N|V|MAP, byp_open_current_peek,               (Alt|KeyCode_Return));
@@ -111,7 +111,7 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 	Bind(byp_project_fkey_command, KeyCode_F16);
 	Bind(toggle_fullscreen, KeyCode_F11);
 
-	Bind(vim_interactive_open_or_new,                   KeyCode_O, KeyCode_Control);
+	Bind(interactive_open_or_new,                       KeyCode_O, KeyCode_Alt, KeyCode_Shift);
 	Bind(byp_test,                                      KeyCode_BackwardSlash, KeyCode_Control);
 	Bind(increase_face_size,                            KeyCode_Equal, KeyCode_Control);
 	Bind(decrease_face_size,                            KeyCode_Minus, KeyCode_Control);
@@ -169,7 +169,7 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 	Bind(comment_line_toggle,                           KeyCode_Semicolon, KeyCode_Control);
 	Bind(word_complete,                                 KeyCode_Tab);
 	Bind(if0_off,                                       KeyCode_I, KeyCode_Alt);
-	Bind(open_matching_file_cpp,                        KeyCode_2, KeyCode_Alt);
+	Bind(open_matching_file_cpp,                        KeyCode_O, KeyCode_Alt);
 	Bind(vim_goto_definition,                           KeyCode_J, KeyCode_Alt);
 	Bind(vim_list_all_functions_current_buffer_lister,  KeyCode_M, KeyCode_Alt);
 	Bind(list_all_functions_all_buffers_lister,         KeyCode_S, KeyCode_Alt, KeyCode_Shift);
