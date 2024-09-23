@@ -31,17 +31,82 @@ CUSTOM_DOC("Just bound to the key I spam to execute whatever test code I'm worki
 	toggle_virtual_whitespace(app);
 }
 
+CUSTOM_COMMAND_SIG(byp_close_all_buffers)
+CUSTOM_DOC("Reloads buffers")
+{
+	for (Buffer_ID buffer = get_buffer_next(app, 0, Access_Always);
+		 buffer != 0;
+		 buffer = get_buffer_next(app, buffer, Access_Always)){
+        if (buffer_has_name_with_star(app, buffer)){ continue; }
+		buffer_kill(app, buffer, BufferKill_AlwaysKill);
+	}
+}
+
+CUSTOM_COMMAND_SIG(byp_reload_config)
+CUSTOM_DOC("Reloads config.4coder file")
+{
+	View_ID view = get_active_view(app, Access_Always);
+	Buffer_ID buffer = view_get_buffer(app, view, Access_Always);
+	Face_ID face = get_face_id(app, buffer);
+	Face_Description face_desc = get_face_description(app, face);
+	load_config_and_apply(app, &global_config_arena, face_desc.parameters.pt_size, face_desc.parameters.hinting);
+}
+
+CUSTOM_COMMAND_SIG(byp_reload_project)
+CUSTOM_DOC("Reloads the project.4coder file")
+{
+    Scratch_Block scratch(app);
+	View_ID view = get_active_view(app, Access_Always);
+	Buffer_ID buffer = view_get_buffer(app, view, Access_Always);
+    String_Const_u8 path = push_buffer_file_name(app, scratch, buffer);
+    String_Const_u8 file = string_front_of_path(path);
+    if (string_match(file, string_u8_litexpr("project.4coder"))){
+        File_Name_Data dump = dump_file(scratch, path);
+        parse_project(app, scratch, dump);
+    }
+}
+
 CUSTOM_COMMAND_SIG(byp_reopen_all_buffers)
 CUSTOM_DOC("Reload current buffer")
 {
-    for (Buffer_ID buffer = get_buffer_next(app, 0, Access_Always);
-         buffer != 0;
-         buffer = get_buffer_next(app, buffer, Access_Always)){
+	View_ID views[32];
+	Buffer_Scroll scrolls[32];
+	i64 count = 0;
+
+	for (View_ID view = get_view_next(app, 0, Access_Always);
+		 view != 0;
+		 view = get_view_next(app, view, Access_Always)){
+		i64 idx = count++;
+		views[idx] = view;
+		scrolls[idx] = view_get_buffer_scroll(app, view);
+	}
+
+	for (Buffer_ID buffer = get_buffer_next(app, 0, Access_Always);
+		 buffer != 0;
+		 buffer = get_buffer_next(app, buffer, Access_Always)){
         if (buffer_has_name_with_star(app, buffer)){ continue; }
 		if (buffer_get_dirty_state(app, buffer) == DirtyState_UpToDate){ continue; }
 		buffer_reopen(app, buffer, 0);
 	}
+
+	foreach(i, count){
+		view_set_buffer_scroll(app, views[i], scrolls[i], SetBufferScroll_NoCursorChange);
+	}
 }
+
+CUSTOM_COMMAND_SIG(format_all_buffers)
+CUSTOM_DOC("Auto-indent and remove blank lines for all loaded buffers")
+{
+	for (Buffer_ID buffer = get_buffer_next(app, 0, Access_ReadWrite);
+		 buffer != 0;
+		 buffer = get_buffer_next(app, buffer, Access_ReadWrite)){
+        if (buffer_has_name_with_star(app, buffer)){ continue; }
+		auto_indent_buffer(app, buffer, buffer_range(app, buffer), Indent_ClearLine|Indent_UseTab|Indent_FullTokens);
+		clean_all_lines_buffer(app, buffer, CleanAllLinesMode_RemoveBlankLines);
+	}
+	save_all_dirty_buffers(app);
+}
+
 
 CUSTOM_COMMAND_SIG(byp_reset_face_size)
 CUSTOM_DOC("Resets face size to default")
@@ -151,6 +216,13 @@ CUSTOM_DOC("Sets the right size of the view near the x position of the cursor.")
 	byp_bracket_opened = 0;
 }
 
+function bool
+byp_is_divider(String_Const_u8 lexeme){
+	return (string_has_prefix(lexeme, string_u8_litexpr("//-"))  ||
+			string_has_prefix(lexeme, string_u8_litexpr("// -")) ||
+			string_has_prefix(lexeme, string_u8_litexpr("//--")));
+}
+
 function void
 byp_find_divider(Application_Links *app, Scan_Direction direction){
 	View_ID view = get_active_view(app, Access_ReadVisible);
@@ -163,18 +235,15 @@ byp_find_divider(Application_Links *app, Scan_Direction direction){
 	for (;;){
 		Scratch_Block scratch(app);
 		Token *token = token_it_read(&it);
+		String_Const_u8 lexeme = {};
 
-		b32 correct_direction = ((token->pos < pos && direction == Scan_Backward) ||
-								 (token->pos > pos && direction == Scan_Forward));
+		b32 valid_dir = ((token->pos < pos && direction == Scan_Backward) ||
+						 (token->pos > pos && direction == Scan_Forward));
+		b32 has_lexeme = token_it_check_and_get_lexeme(app, scratch, &it, TokenBaseKind_Comment, &lexeme);
 
-		String_Const_u8 tail = {};
-		if (correct_direction && token_it_check_and_get_lexeme(app, scratch, &it, TokenBaseKind_Comment, &tail)){
-			String_Const_u8 match = string_u8_litexpr("//-");
-			String_Const_u8 prefix = string_prefix(tail, match.size);
-			if (block_match(prefix.str, match.str, match.size)){
-				view_set_cursor(app, view, seek_pos(token->pos));
-				return;
-			}
+		if (valid_dir && has_lexeme && byp_is_divider(lexeme)){
+			view_set_cursor(app, view, seek_pos(token->pos));
+			return;
 		}
 
 		b32 has_next = (direction == Scan_Forward ?

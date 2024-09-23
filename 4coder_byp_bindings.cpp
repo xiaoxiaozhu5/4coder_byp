@@ -35,7 +35,6 @@ byp_vim_bindings(Application_Links *app){
 	u32 Sft = KeyMod_Sft;
 	u32 Alt = KeyMod_Alt;
 
-	VimBind(N|MAP, redo,                                  (Ctl|KeyCode_Y));
 	VimBind(N|MAP, redo,                              (Ctl|Sft|KeyCode_Z));
 	VimBind(N|MAP, save,                                  (Ctl|KeyCode_S));
 	VimBind(N|MAP, vim_line_start,                        (Sft|KeyCode_0));
@@ -46,7 +45,7 @@ byp_vim_bindings(Application_Links *app){
 	VimBind(N|MAP, change_active_panel,                   (Ctl|KeyCode_L));
 	VimBind(N|MAP, goto_next_jump,                        (Alt|KeyCode_N));
 	VimBind(N|MAP, goto_prev_jump,                    (Alt|Sft|KeyCode_N));
-	VimBind(N|MAP, vim_switch_lister,                     (Ctl|Sft|KeyCode_I));
+	VimBind(N|MAP, vim_switch_lister,                 (Ctl|Sft|KeyCode_I));
 
 	VimBind(N|V|MAP, vim_bounce,                          (Ctl|KeyCode_5));
 	VimBind(N|V|MAP, byp_open_current_peek,               (Alt|KeyCode_Return));
@@ -76,7 +75,6 @@ byp_vim_bindings(Application_Links *app){
 #undef V
 #undef MAP
 }
-
 
 function void
 byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
@@ -111,7 +109,7 @@ byp_default_bindings(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
 	Bind(byp_project_fkey_command, KeyCode_F16);
 	Bind(toggle_fullscreen, KeyCode_F11);
 
-	Bind(interactive_open_or_new,                       KeyCode_O, KeyCode_Alt, KeyCode_Shift);
+	Bind(vim_interactive_open_or_new,                       KeyCode_O, KeyCode_Alt, KeyCode_Shift);
 	Bind(byp_test,                                      KeyCode_BackwardSlash, KeyCode_Control);
 	Bind(increase_face_size,                            KeyCode_Equal, KeyCode_Control);
 	Bind(decrease_face_size,                            KeyCode_Minus, KeyCode_Control);
