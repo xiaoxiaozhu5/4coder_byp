@@ -62,8 +62,8 @@ CUSTOM_DOC("Responding to a startup event")
 	desc.parameters.bold = 0;
 	byp_minimal_face = try_create_new_face(app, &desc);
 
-	system_set_fullscreen(true);
-	set_window_title(app, string_u8_litexpr("4coder BYP"));
+	//system_set_fullscreen(true);
+	set_window_title(app, string_u8_litexpr("4coder"));
 
 	byp_relative_numbers = 1;
 	byp_show_hex_colors = 1;

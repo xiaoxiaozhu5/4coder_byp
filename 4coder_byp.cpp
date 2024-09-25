@@ -6,8 +6,12 @@
 
 #include "4coder_default_include.h"
 
+#if VIM_USE_BOTTOM_LISTER
 function Lister_Result vim_run_lister(Application_Links *app, Lister *lister);
 #define run_lister vim_run_lister
+#else
+#define run_lister default_run_lister
+#endif
 
 CUSTOM_ID(colors, defcolor_function);
 CUSTOM_ID(colors, defcolor_type);
